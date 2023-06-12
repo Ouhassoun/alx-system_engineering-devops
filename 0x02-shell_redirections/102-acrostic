@@ -1,2 +1,2 @@
 #!/bin/bash
-echo -e "$(head -c1)\n"
+cut -c1 | tr -d '\n'; echo
