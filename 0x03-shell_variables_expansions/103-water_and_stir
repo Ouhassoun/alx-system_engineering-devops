@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "${WATER}${STIR}"
+result=$(echo -n "${WATER}${STIR}" | sha256sum)echo ${result:0:9} | tr -d ' '
