@@ -1,0 +1,13 @@
+#!/bin/bash
+
+domain="$1"
+subdomain="${2:-www lb-01 web-01 web-02}"
+
+for sub in $subdomain; do
+    result=$(dig "${sub}.${domain}" | awk '/^;; ANSWER SECTION:/ {getline; print}')
+    if [[ -n $result ]]; then
+        record_type=$(echo "$result" | awk '{print $4}')
+        destination=$(echo "$result" | awk '{print $5}')
+        echo "The subdomain $sub is a $record_type record and points to $destination"
+    fi
+done

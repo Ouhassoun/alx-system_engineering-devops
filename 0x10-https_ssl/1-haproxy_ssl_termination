@@ -1,0 +1,17 @@
+global
+    # Global HAproxy configuration settings
+
+defaults
+    # Default settings for all services
+
+frontend https-in
+    # Define the frontend for HTTPS traffic
+    bind *:443 ssl crt /etc/ssl/holberton.pem
+    reqadd X-Forwarded-Proto:\ https
+    mode http
+    default_backend web-backend
+
+backend web-backend
+    # Define the backend for your web server
+    server web-01 web-01-ip:80 check
+    # Add more server lines for additional web servers if needed
