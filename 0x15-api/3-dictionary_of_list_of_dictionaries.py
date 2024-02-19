@@ -1,33 +1,31 @@
 #!/usr/bin/python3
-# Using what you did in the task #0, extend your Python
-# script to export data in the JSON format.
+"""
+    Extend Python script in 0-gather_data_from_an_API.py file to export data
+    in the JSON format.
 
-import json
-import requests
-import sys
+    Requirement:
+    ============
+    Records all tasks from all employees.
+"""
+
 
 if __name__ == "__main__":
-    jsonplaceholder = 'https://jsonplaceholder.typicode.com/users'
-    response = requests.get(jsonplaceholder)
-    employees = response.json()
-    print(employees)
-    
-    data_dict = {}
+    import json
+    import requests
 
+    url = "https://jsonplaceholder.typicode.com"
+    employees = requests.get("{}/users".format(url)).json()
+    tasks = requests.get("{}/todos".format(url)).json()
+
+    my_dict = {}
     for employee in employees:
-        USER_ID = employee.get('id')
-        username = employee.get('username')
-        url = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(USER_ID)
-        response = requests.get(url)
-        tasks = response.json()
-        data_dict[USER_ID] = []
-        for task in tasks:
-            data_dict[USER_ID].append({
-                "username": username,
-                "task": task.get("title"),
-                "completed": task.get("completed"),
-            })
+        my_list = [{
+            "task": dict.get("title"),
+            "completed": dict.get("completed"),
+            "username": employee.get("username")}
+            for dict in tasks if dict.get("userId") == employee.get("id")]
+        my_dict[employee.get("id")] = my_list
 
-    # Write the tasks data to a JSON file
-    with open('todo_all_employees.json', 'w') as f:
-        json.dump(data_dict, f)
+    filename = "todo_all_employees.json"
+    with open(filename, 'w') as json_file:
+        json.dump(my_dict, json_file)
